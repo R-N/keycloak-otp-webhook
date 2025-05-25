@@ -1,4 +1,4 @@
-package com.akshatsachdeva.keycloak.authenticator.utils;
+package co.jeel.keycloak.authenticator.utils;
 
 import io.smallrye.config.SmallRyeConfig;
 import org.eclipse.microprofile.config.ConfigProvider;

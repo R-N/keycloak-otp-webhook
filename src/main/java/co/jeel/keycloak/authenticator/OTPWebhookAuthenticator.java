@@ -1,8 +1,8 @@
-package com.akshatsachdeva.keycloak.authenticator;
+package co.jeel.keycloak.authenticator;
 
 import java.net.http.HttpResponse;
 
-import com.akshatsachdeva.keycloak.authenticator.utils.HmacUtils;
+import co.jeel.keycloak.authenticator.utils.HmacUtils;
 import jakarta.ws.rs.core.Response;
 
 import org.jboss.logging.Logger;
@@ -17,11 +17,11 @@ import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.sessions.AuthenticationSessionModel;
 
-import com.akshatsachdeva.keycloak.authenticator.models.OTPWebhookAuthenticatorAuthNote;
-import com.akshatsachdeva.keycloak.authenticator.models.OTPWebhookAuthenticatorConfig;
-import com.akshatsachdeva.keycloak.authenticator.models.UserAttributes;
-import com.akshatsachdeva.keycloak.authenticator.webhook.WebhookSPIIntegrationHelper;
-import com.akshatsachdeva.keycloak.authenticator.webhook.WebhookSPIRequest;
+import co.jeel.keycloak.authenticator.models.OTPWebhookAuthenticatorAuthNote;
+import co.jeel.keycloak.authenticator.models.OTPWebhookAuthenticatorConfig;
+import co.jeel.keycloak.authenticator.models.UserAttributes;
+import co.jeel.keycloak.authenticator.webhook.WebhookSPIIntegrationHelper;
+import co.jeel.keycloak.authenticator.webhook.WebhookSPIRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class OTPWebhookAuthenticator implements Authenticator {

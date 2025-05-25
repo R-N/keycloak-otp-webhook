@@ -1,1 +1,1 @@
-com.akshatsachdeva.keycloak.authenticator.OTPWebhookAuthenticatorFactory
+co.jeel.keycloak.authenticator.OTPWebhookAuthenticatorFactory

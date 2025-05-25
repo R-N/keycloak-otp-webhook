@@ -1,4 +1,4 @@
-package com.akshatsachdeva.keycloak.authenticator.models;
+package co.jeel.keycloak.authenticator.models;
 
 import java.net.URI;
 import java.util.Arrays;

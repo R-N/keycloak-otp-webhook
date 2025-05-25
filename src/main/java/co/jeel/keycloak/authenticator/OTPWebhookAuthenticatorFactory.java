@@ -1,4 +1,4 @@
-package com.akshatsachdeva.keycloak.authenticator;
+package co.jeel.keycloak.authenticator;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.provider.ProviderConfigProperty;
 import org.keycloak.provider.ProviderConfigurationBuilder;
 
-import com.akshatsachdeva.keycloak.authenticator.models.OTPWebhookAuthenticatorConfigEnums;
+import co.jeel.keycloak.authenticator.models.OTPWebhookAuthenticatorConfigEnums;
 
 public class OTPWebhookAuthenticatorFactory implements AuthenticatorFactory {
 

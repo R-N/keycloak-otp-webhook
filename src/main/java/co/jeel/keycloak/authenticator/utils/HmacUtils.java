@@ -1,6 +1,6 @@
-package com.akshatsachdeva.keycloak.authenticator.utils;
+package co.jeel.keycloak.authenticator.utils;
 
-import com.akshatsachdeva.keycloak.authenticator.webhook.WebhookSPIRequest;
+import co.jeel.keycloak.authenticator.webhook.WebhookSPIRequest;
 import org.apache.commons.codec.digest.HmacAlgorithms;
 
 import javax.crypto.Mac;
