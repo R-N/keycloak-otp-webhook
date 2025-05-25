@@ -5,13 +5,13 @@ import java.util.Arrays;
 
 public class OTPWebhookAuthenticatorConfig {
 
-	int otpLength;
-	long otpExpirySeconds;
-	String userIdentifyingAttribute;
-	char[] allowedChars;
-	URI webhook;
-	long timeoutSeconds;
-	boolean enableLogging;
+	private int otpLength;
+	private long otpExpirySeconds;
+	private String userIdentifyingAttribute;
+	private char[] allowedChars;
+	private URI webhook;
+	private long timeoutSeconds;
+	private boolean enableLogging;
 
 	public int getOtpLength() {
 		return otpLength;
