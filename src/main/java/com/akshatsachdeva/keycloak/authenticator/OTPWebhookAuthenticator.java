@@ -51,8 +51,10 @@ public class OTPWebhookAuthenticator implements Authenticator {
 
 			WebhookSPIRequest webhookRequest = new WebhookSPIRequest(userIdentifier, otp, otpExpiryTimestamp);
 			String requestBody = OBJECT_MAPPER.writeValueAsString(webhookRequest);
+			String hmacSignature = HmacUtils.getHmacSignature(context.getRealm().getName(), webhookRequest);
 			HttpResponse<String> response = WebhookSPIIntegrationHelper.trigger(config.getWebhook(),
-					config.getTimeoutSeconds(), requestBody, config.isEnableLogging());
+					config.getTimeoutSeconds(), requestBody, hmacSignature,
+					config.isEnableLogging());
 
 			if (response.statusCode() >= 400) {
 				throw new RuntimeException(response.body());
