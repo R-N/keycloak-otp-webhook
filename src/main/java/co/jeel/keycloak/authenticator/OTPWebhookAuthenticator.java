@@ -38,26 +38,34 @@ public class OTPWebhookAuthenticator implements Authenticator {
 			OTPWebhookAuthenticatorConfig config = OBJECT_MAPPER.convertValue(configModel.getConfig(),
 					OTPWebhookAuthenticatorConfig.class);
 
-			String otp = SecretGenerator.getInstance().randomString(config.getOtpLength(), config.getAllowedChars());
-			long otpExpiryTimestamp = System.currentTimeMillis() + (config.getOtpExpirySeconds() * 1000L);
+			String otp;
+			if (config.isMocked()) {
+				otp = "3333";
+			} else {
+            	otp = SecretGenerator.getInstance().randomString(config.getOtpLength(), config.getAllowedChars());
+			}
+
+            long otpExpiryTimestamp = System.currentTimeMillis() + (config.getOtpExpirySeconds() * 1000L);
 			String otpExpiry = Long.toString(otpExpiryTimestamp);
 
 			AuthenticationSessionModel authSession = context.getAuthenticationSession();
 			authSession.setAuthNote(OTPWebhookAuthenticatorAuthNote.OTP.name(), otp);
 			authSession.setAuthNote(OTPWebhookAuthenticatorAuthNote.OTP_EXPIRY.name(), otpExpiry);
 
-			UserModel user = context.getUser();
-			String userIdentifier = user.getFirstAttribute(config.getUserIdentifyingAttribute());
+			if (!config.isMocked()) {
+				UserModel user = context.getUser();
+				String userIdentifier = user.getFirstAttribute(config.getUserIdentifyingAttribute());
 
-			WebhookSPIRequest webhookRequest = new WebhookSPIRequest(userIdentifier, otp, otpExpiryTimestamp);
-			String requestBody = OBJECT_MAPPER.writeValueAsString(webhookRequest);
-			String hmacSignature = HmacUtils.getHmacSignature(context.getRealm().getName(), webhookRequest);
-			HttpResponse<String> response = WebhookSPIIntegrationHelper.trigger(config.getWebhook(),
-					config.getTimeoutSeconds(), requestBody, hmacSignature,
-					config.isEnableLogging());
+				WebhookSPIRequest webhookRequest = new WebhookSPIRequest(userIdentifier, otp, otpExpiryTimestamp);
+				String requestBody = OBJECT_MAPPER.writeValueAsString(webhookRequest);
+				String hmacSignature = HmacUtils.getHmacSignature(context.getRealm().getName(), webhookRequest);
+				HttpResponse<String> response = WebhookSPIIntegrationHelper.trigger(config.getWebhook(),
+						config.getTimeoutSeconds(), requestBody, hmacSignature,
+						config.isEnableLogging());
 
-			if (response.statusCode() >= 400) {
-				throw new RuntimeException(response.body());
+				if (response.statusCode() >= 400) {
+					throw new RuntimeException(response.body());
+				}
 			}
 
 			context.challenge(context.form().setAttribute("realm", context.getRealm()).createForm(OTP_INPUT_FORM));
