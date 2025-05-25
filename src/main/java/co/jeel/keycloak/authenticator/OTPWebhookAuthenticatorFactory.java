@@ -107,6 +107,13 @@ public class OTPWebhookAuthenticatorFactory implements AuthenticatorFactory {
 					.helpText("Enable logs for debugging")
 					.type(ProviderConfigProperty.BOOLEAN_TYPE)
 				.add()
+
+				.property()
+				.name(OTPWebhookAuthenticatorConfigEnums.MOCKED.getKey())
+				.label("Enable Mocked OTP")
+				.helpText("Enable Mocked OTP for non-prod environments")
+				.type(ProviderConfigProperty.BOOLEAN_TYPE)
+				.add()
 				
 			.build();
 		// @formatter:on

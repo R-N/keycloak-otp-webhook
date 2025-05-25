@@ -12,6 +12,7 @@ public class OTPWebhookAuthenticatorConfig {
 	private URI webhook;
 	private long timeoutSeconds;
 	private boolean enableLogging;
+	private boolean mocked;
 
 	public int getOtpLength() {
 		return otpLength;
@@ -67,6 +68,14 @@ public class OTPWebhookAuthenticatorConfig {
 
 	public void setEnableLogging(boolean enableLogging) {
 		this.enableLogging = enableLogging;
+	}
+
+	public boolean isMocked() {
+		return mocked;
+	}
+
+	public void setMocked(boolean mocked) {
+		this.mocked = mocked;
 	}
 
 	@Override
