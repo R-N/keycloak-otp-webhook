@@ -1,4 +1,4 @@
-package com.akshatsachdeva.keycloak.authenticator.models;
+package co.jeel.keycloak.authenticator.models;
 
 public enum OTPWebhookAuthenticatorConfigEnums {
 	// @formatter:off
@@ -9,6 +9,7 @@ public enum OTPWebhookAuthenticatorConfigEnums {
 	WEBHOOK("webhook"),
 	TIMEOUT_SECONDS("timeoutSeconds"),
 	ENABLE_LOGGING("enableLogging"),
+	MOCKED("mocked"),
 	;
 	// @formatter:on
 	

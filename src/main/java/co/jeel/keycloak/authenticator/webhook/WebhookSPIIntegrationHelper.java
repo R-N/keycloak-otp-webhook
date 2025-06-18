@@ -1,4 +1,4 @@
-package com.akshatsachdeva.keycloak.authenticator.webhook;
+package co.jeel.keycloak.authenticator.webhook;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,7 +18,7 @@ public class WebhookSPIIntegrationHelper {
 	private static final Logger LOGGER = Logger.getLogger(WebhookSPIIntegrationHelper.class);
 	private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
 
-	public static HttpResponse<String> trigger(URI uri, long timeoutSeconds, String requestBody, boolean enableLogging)
+	public static HttpResponse<String> trigger(URI uri, long timeoutSeconds, String requestBody, String hmacSignature, boolean enableLogging)
 			throws IOException, InterruptedException {
 		if (enableLogging) {
 			LOGGER.info("Sending request: " + requestBody + ", to url: " + uri);
@@ -29,6 +29,7 @@ public class WebhookSPIIntegrationHelper {
 				.uri(uri)
 				.timeout(Duration.ofSeconds(timeoutSeconds))
 				.header("Content-Type", "application/json")
+				.header("X-Signature", hmacSignature)
 				.POST(BodyPublishers.ofString(requestBody))
 			.build();
 		// @formatter:on

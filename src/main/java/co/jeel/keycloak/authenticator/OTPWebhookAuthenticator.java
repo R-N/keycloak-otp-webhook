@@ -1,7 +1,8 @@
-package com.akshatsachdeva.keycloak.authenticator;
+package co.jeel.keycloak.authenticator;
 
 import java.net.http.HttpResponse;
 
+import co.jeel.keycloak.authenticator.utils.HmacUtils;
 import jakarta.ws.rs.core.Response;
 
 import org.jboss.logging.Logger;
@@ -16,11 +17,11 @@ import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.sessions.AuthenticationSessionModel;
 
-import com.akshatsachdeva.keycloak.authenticator.models.OTPWebhookAuthenticatorAuthNote;
-import com.akshatsachdeva.keycloak.authenticator.models.OTPWebhookAuthenticatorConfig;
-import com.akshatsachdeva.keycloak.authenticator.models.UserAttributes;
-import com.akshatsachdeva.keycloak.authenticator.webhook.WebhookSPIIntegrationHelper;
-import com.akshatsachdeva.keycloak.authenticator.webhook.WebhookSPIRequest;
+import co.jeel.keycloak.authenticator.models.OTPWebhookAuthenticatorAuthNote;
+import co.jeel.keycloak.authenticator.models.OTPWebhookAuthenticatorConfig;
+import co.jeel.keycloak.authenticator.models.UserAttributes;
+import co.jeel.keycloak.authenticator.webhook.WebhookSPIIntegrationHelper;
+import co.jeel.keycloak.authenticator.webhook.WebhookSPIRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class OTPWebhookAuthenticator implements Authenticator {
@@ -37,24 +38,34 @@ public class OTPWebhookAuthenticator implements Authenticator {
 			OTPWebhookAuthenticatorConfig config = OBJECT_MAPPER.convertValue(configModel.getConfig(),
 					OTPWebhookAuthenticatorConfig.class);
 
-			String otp = SecretGenerator.getInstance().randomString(config.getOtpLength(), config.getAllowedChars());
-			long otpExpiryTimestamp = System.currentTimeMillis() + (config.getOtpExpirySeconds() * 1000L);
+			String otp;
+			if (config.isMocked()) {
+				otp = "3333";
+			} else {
+            	otp = SecretGenerator.getInstance().randomString(config.getOtpLength(), config.getAllowedChars());
+			}
+
+            long otpExpiryTimestamp = System.currentTimeMillis() + (config.getOtpExpirySeconds() * 1000L);
 			String otpExpiry = Long.toString(otpExpiryTimestamp);
 
 			AuthenticationSessionModel authSession = context.getAuthenticationSession();
 			authSession.setAuthNote(OTPWebhookAuthenticatorAuthNote.OTP.name(), otp);
 			authSession.setAuthNote(OTPWebhookAuthenticatorAuthNote.OTP_EXPIRY.name(), otpExpiry);
 
-			UserModel user = context.getUser();
-			String userIdentifier = user.getFirstAttribute(config.getUserIdentifyingAttribute());
+			if (!config.isMocked()) {
+				UserModel user = context.getUser();
+				String userIdentifier = user.getFirstAttribute(config.getUserIdentifyingAttribute());
 
-			WebhookSPIRequest webhookRequest = new WebhookSPIRequest(userIdentifier, otp, otpExpiryTimestamp);
-			String requestBody = OBJECT_MAPPER.writeValueAsString(webhookRequest);
-			HttpResponse<String> response = WebhookSPIIntegrationHelper.trigger(config.getWebhook(),
-					config.getTimeoutSeconds(), requestBody, config.isEnableLogging());
+				WebhookSPIRequest webhookRequest = new WebhookSPIRequest(userIdentifier, otp, otpExpiryTimestamp);
+				String requestBody = OBJECT_MAPPER.writeValueAsString(webhookRequest);
+				String hmacSignature = HmacUtils.getHmacSignature(context.getRealm().getName(), webhookRequest);
+				HttpResponse<String> response = WebhookSPIIntegrationHelper.trigger(config.getWebhook(),
+						config.getTimeoutSeconds(), requestBody, hmacSignature,
+						config.isEnableLogging());
 
-			if (response.statusCode() >= 400) {
-				throw new RuntimeException(response.body());
+				if (response.statusCode() >= 400) {
+					throw new RuntimeException(response.body());
+				}
 			}
 
 			context.challenge(context.form().setAttribute("realm", context.getRealm()).createForm(OTP_INPUT_FORM));

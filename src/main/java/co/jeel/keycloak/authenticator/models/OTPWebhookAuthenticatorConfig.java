@@ -1,17 +1,18 @@
-package com.akshatsachdeva.keycloak.authenticator.models;
+package co.jeel.keycloak.authenticator.models;
 
 import java.net.URI;
 import java.util.Arrays;
 
 public class OTPWebhookAuthenticatorConfig {
 
-	int otpLength;
-	long otpExpirySeconds;
-	String userIdentifyingAttribute;
-	char[] allowedChars;
-	URI webhook;
-	long timeoutSeconds;
-	boolean enableLogging;
+	private int otpLength;
+	private long otpExpirySeconds;
+	private String userIdentifyingAttribute;
+	private char[] allowedChars;
+	private URI webhook;
+	private long timeoutSeconds;
+	private boolean enableLogging;
+	private boolean mocked;
 
 	public int getOtpLength() {
 		return otpLength;
@@ -67,6 +68,14 @@ public class OTPWebhookAuthenticatorConfig {
 
 	public void setEnableLogging(boolean enableLogging) {
 		this.enableLogging = enableLogging;
+	}
+
+	public boolean isMocked() {
+		return mocked;
+	}
+
+	public void setMocked(boolean mocked) {
+		this.mocked = mocked;
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package com.akshatsachdeva.keycloak.authenticator.webhook;
+package co.jeel.keycloak.authenticator.webhook;
 
 public class WebhookSPIRequest {
 	private String userIdentifier;
